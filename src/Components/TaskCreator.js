@@ -47,7 +47,8 @@ export default function TaskCreator({rerender}) {
     flex
     relative
     flex-col
-    max-w-lg
+    mx-auto
+    max-w-5xl
     items-center
     justify-between
     bg-gray-800
@@ -56,9 +57,7 @@ export default function TaskCreator({rerender}) {
     bg-opacity-50
     p-6`}
     >
-      <div className="my-4">
-        <h1 className="text-3xl text-white">Add Task</h1>
-      </div>
+
       <div
         className={`
     flex

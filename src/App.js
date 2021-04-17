@@ -18,7 +18,7 @@ function App() {
           <Header />
         </div>
         {/* Create and review tasks section */}
-        <div className="max-w-5xl mx-auto flex gap-x-2 items-center">
+        <div className="max-w-5xl mx-auto flex gap-x-2 items-center flex-col gap-y-2 lg:flex-row">
           {/* Create A Task */}
 
           <div>
