@@ -13,11 +13,13 @@ import { db } from "../firebase";
 
 // react-select
 import Select from "react-select";
+import { styles } from "../utils/selectConfig";
 
 export default function StartTask({ state, rerender }) {
   //hooks
   const { start, reset, time } = useTimer({
     onTimeUpdate: async (time) => {
+      // Update the firebase document (end time) every 2 minutes
       if (time % 120 === 0) {
         const time = new Date().getTime();
         await db
@@ -31,14 +33,31 @@ export default function StartTask({ state, rerender }) {
   });
 
   const [loading, setLoading] = useState(false);
-  const [task, setTask] = useState(null);
+  const [task, setTask] = useState(null); // docRef
   const [tasks, setTasks] = useState([]);
-  const [currentTask, setCurrentTask] = useState(null);
+  const [currentTask, setCurrentTask] = useState(null); // {task: [id], timesheet: [id]}
 
+  /**
+   * Rerender tasks when state changes
+   */
   useEffect(() => {
     getTasks();
   }, [state]);
 
+  // methods
+
+  /**
+   * Get all tasks from firebase
+   */
+  const getTasks = async () => {
+    // Get all tasks from firebase
+    const { docs } = await db.collection("tasks").get();
+    setTasks(docs);
+  };
+
+  /**
+   * Array of options for Select component
+   */
   const options = useMemo(() => {
     return tasks.map((task) => ({
       value: task.data().name,
@@ -47,42 +66,24 @@ export default function StartTask({ state, rerender }) {
     }));
   }, [tasks]);
 
-  const styles = {
-    option: (styles, { data, isDisabled, isSelected }) => {
-      return {
-        ...styles,
-
-        color: isDisabled ? "#ccc" : isSelected ? "white" : data.color,
-        cursor: isDisabled ? "not-allowed" : "default",
-
-        ":active": {
-          ...styles[":active"],
-          backgroundColor: !isDisabled && (isSelected ? data.color : "white"),
-        },
-      };
-    },
-    input: (styles) => ({ ...styles, ...dot() }),
-    placeholder: (styles) => ({ ...styles, ...dot() }),
-    singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) }),
-  };
-
-  // methods
-  const getTasks = async () => {
-    // Get all tasks from firebase
-    const { docs } = await db.collection("tasks").get();
-    setTasks(docs);
-  };
+  /**
+   * If starting a new timesheet, appends it in firebase and determines start & end values.
+   * If ending the existing timesheet, updates the end time.
+   * @param {Object} e form submit event object
+   * @returns {null}
+   */
 
   const createTimesheet = async (e) => {
     e.preventDefault();
 
+    // If no task -> bail
     if (!task) {
       return;
     }
 
     setLoading(true);
 
-    // Task already running
+    // Timesheet already running
     if (currentTask) {
       const time = new Date().getTime();
 
@@ -96,7 +97,9 @@ export default function StartTask({ state, rerender }) {
       setCurrentTask(null);
       reset(); // timer
       rerender();
-    } else {
+    }
+    // Starting a new timesheet
+    else {
       const value = task.value;
       const time = new Date().getTime();
       const timesheet = await db
@@ -112,20 +115,6 @@ export default function StartTask({ state, rerender }) {
     setLoading(false);
   };
 
-  const dot = (color = "#ccc") => ({
-    alignItems: "center",
-    display: "flex",
-
-    ":before": {
-      backgroundColor: color,
-      borderRadius: 10,
-      content: '" "',
-      display: "block",
-      marginRight: 8,
-      height: 10,
-      width: 10,
-    },
-  });
   return (
     <div className="bg-gray-800 bg-opacity-50 w-80 h-40 rounded">
       <form className="flex flex-col p-4" onSubmit={createTimesheet}>

@@ -8,11 +8,20 @@ export default function TaskViewer({ state, rerender }) {
   const [tasks, setTasks] = useState([]);
 
   // methods
+
+  /**
+   * Get all tasks in firebase, sets them in tasks
+   */
   const getTasks = async () => {
     // Get all tasks from firebase
     const { docs } = await db.collection("tasks").get();
     setTasks(docs);
   };
+
+  /**
+   * Deleted a task from firebase (firebase doesn't delete inner timesheets though)
+   * @param {Object} task firebase docref for a task
+   */
 
   const removeTask = async (task) => {
     db.collection("tasks")
@@ -25,9 +34,11 @@ export default function TaskViewer({ state, rerender }) {
       .catch((error) => {
         console.error("Error removing document: ", error);
       });
-      
   };
 
+  /**
+   * Rerenders when state toggles
+   */
   useEffect(() => {
     getTasks();
   }, [state]);
@@ -42,6 +53,7 @@ export default function TaskViewer({ state, rerender }) {
     p-6`}
     >
       <div>
+        {/* Tasks list */}
         <ul className="flex flex-col divide-y">
           {tasks.map((task, index) => (
             <li

@@ -10,12 +10,21 @@ export default function TaskPie({ state }) {
   const [pieData, setPieData] = useState([]);
 
   // methods
+
+  /**
+   * Get all tasks from firebase
+   */
   const getTasks = async () => {
     // Get all tasks from firebase
     const { docs } = await db.collection("tasks").get();
     setTasks(docs);
   };
 
+  /**
+   * Constructs the pieData.
+   * For each task, traverse all time sheets and calculate minutes
+   * Then update pieData with that object
+   */
   const getTimesheets = async () => {
     let data = await Promise.all(
       tasks.map(async (taskDoc) => {
@@ -47,22 +56,26 @@ export default function TaskPie({ state }) {
     setPieData(data);
   };
 
+  /**
+   * Rerenders tasks when state changes
+   */
   useEffect(() => {
     getTasks();
   }, [state]);
 
+  /**
+   * Rerender timesheets when tasks change (a derivative from when `state` changes)
+   */
   useEffect(() => {
     getTimesheets();
   }, [tasks]);
 
-  const handlePieClick = () => {};
 
   return (
     <div className="bg-gray-800 bg-opacity-50">
       <PieChart width={350} height={350}>
         <Pie
           data={pieData}
-          onClick={handlePieClick}
           dataKey="minutes"
           nameKey="name"
           cx="50%"

@@ -12,6 +12,11 @@ export default function TaskCreator({rerender}) {
   const [loading, setLoading] = useState(false);
   const nameRef = useRef({});
 
+  /**
+   * 
+   * @param {Object} e form submit event object 
+   * @returns {null}
+   */
   const createNewTask = async (e) => {
     e.preventDefault();
 
@@ -26,7 +31,6 @@ export default function TaskCreator({rerender}) {
     setLoading(true);
 
     // Create document
-
     await db.collection("tasks").doc(name).set({
       name: name,
       color: color,
