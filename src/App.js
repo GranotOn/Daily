@@ -21,26 +21,35 @@ function App() {
   }, [state]);
 
   return (
-    <div className="w-screen h-screen overflow-hidden relative bg-gray-900">
-      <div className="w-full h-full relative overflow-y-auto bg-gray-900 grid grid-flow-row py-10 gap-y-6">
+    <div className="w-screen h-screen relative overflow-hidden bg-gray-900">
+      <div className="flex flex-col p-6 relative overflow-auto w-screen h-screen">
         {/* Header section */}
-        <div className="mx-auto">
-          <Header />
-        </div>
-        <div className="mx-auto">
-          <StartTask rerender={rerender} tasks={tasks} />
-        </div>
-        {/* Create and review tasks section */}
-        <div className="max-w-5xl mx-auto flex gap-x-2 items-center flex-col gap-y-2 lg:flex-row">
-          {/* Create A Task */}
-          <TaskCreator rerender={rerender} />
-
+        <Header />
+        <main className="max-w-5xl mx-auto grid grid-flow-col grid-cols-3 my-10 gap-y-2 gap-x-6">
+          {/* Start A Task */}
+          <div className="row-start-1">
+            <h3 className="text-indigo-400 text-lg">Timer</h3>
+            <StartTask rerender={rerender} tasks={tasks} />
+          </div>
           {/* Pie View */}
-          <TaskPie tasks={tasks} />
-
+          <div className="row-start-1">
+            <h3 className="text-indigo-400 text-lg">Monitor</h3>
+            <TaskPie tasks={tasks} />
+          </div>
           {/* Task List */}
-          <TaskViewer rerender={rerender} tasks={tasks} />
-        </div>
+          <div className="row-start-1">
+            <h3 className="text-indigo-400 text-lg">Tasks</h3>
+            <TaskViewer rerender={rerender} tasks={tasks} />
+          </div>
+          {/* Create A Task */}
+          <div className="row-start-3 col-start-1 col-span-2">
+            <h3 className="text-indigo-400 text-lg">Add A New Task Type</h3>
+            <TaskCreator rerender={rerender} />
+          </div>
+          <div className="row-start-3">
+            <h3 className="text-indigo-400 text-lg">Daily Report</h3>
+          </div>
+        </main>
       </div>
     </div>
   );

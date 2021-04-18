@@ -75,7 +75,7 @@ export default function TaskCreator({ rerender }) {
         />
         <form onSubmit={createNewTask} className="flex flex-col items-center">
           <div className="flex flex-col gap-y-1">
-            <label className="text-indigo-500" htmlFor="name">
+            <label className="text-gray-400" htmlFor="name">
               Task Name
             </label>
             <input

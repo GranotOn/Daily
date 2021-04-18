@@ -19,10 +19,11 @@ export default function StartTask({ rerender, tasks }) {
   //hooks
   const { start, reset, time } = useTimer({
     onTimeUpdate: async (time) => {
-      // Update the firebase document (end time) every 2 minutes
-      if (time % 120 === 0 && currentTask) {
+      // Update the firebase document (end time) every minute
+      if (time % 60 === 0 && currentTask) {
         const time = new Date().getTime();
         updateEndTime(currentTask.task, currentTask.timesheet, time);
+        rerender();
       }
     },
   });
@@ -97,7 +98,8 @@ export default function StartTask({ rerender, tasks }) {
         />
         <button
           disabled={loading}
-          className={`
+          className={
+            `
             my-4
             text-white
             border-2
@@ -105,8 +107,10 @@ export default function StartTask({ rerender, tasks }) {
             rounded
             px-4 py-2
             shadow-lg
-            bg-gray-900 hover:bg-indigo-600
-            active:bg-indigo-900 focus:outline-none`}
+            hover:bg-indigo-600
+            active:bg-indigo-900 focus:outline-none ` +
+            (currentTask ? "bg-gray-900" : "bg-green-400")
+          }
         >
           {currentTask ? "Stop" : "Start"}
         </button>
