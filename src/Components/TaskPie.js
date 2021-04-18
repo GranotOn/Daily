@@ -6,6 +6,7 @@ import { db } from "../firebase";
 
 export default function TaskPie({ tasks }) {
   //hooks
+  const [lastUpdate, setLastUpdate] = useState(null);
   const [pieData, setPieData] = useState([]);
 
   /**
@@ -44,16 +45,13 @@ export default function TaskPie({ tasks }) {
     setPieData(data);
   };
 
-  /**
-   * Rerender timesheets when tasks change (a derivative from when `state` changes)
-   */
   useEffect(() => {
     getTimesheets();
+    setLastUpdate(new Date().toUTCString().split(" ").slice(-2).join(" "));
   }, [tasks]);
 
-
   return (
-    <div className="bg-gray-800 bg-opacity-50">
+    <div className="bg-gray-800 bg-opacity-50 flex flex-col items-center">
       <PieChart width={350} height={350}>
         <Pie
           data={pieData}
@@ -73,6 +71,9 @@ export default function TaskPie({ tasks }) {
           formatter={(value, name, props) => [`${value} Minutes`, name]}
         />
       </PieChart>
+      <p className="text-gray-400 px-2 self-start">
+        Last update: <span>{lastUpdate}</span>
+      </p>
     </div>
   );
 }
