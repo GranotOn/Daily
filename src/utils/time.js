@@ -1,6 +1,6 @@
-export const getMinutesFromSeconds = (seconds) => Math.floor(seconds / 60);
+export const getMinutesFromSeconds = (seconds) => Math.floor(seconds / 60) % 60;
 
 export const getHoursFromSeconds = (seconds) =>
-  Math.floor(getMinutesFromSeconds(seconds) / 60);
+  Math.floor(Math.floor(seconds / 60) / 60);
 
 export const getSeconds = (time) => time % 60;
