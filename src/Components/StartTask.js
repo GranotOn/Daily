@@ -16,7 +16,20 @@ import Select from "react-select";
 
 export default function StartTask({ state, rerender }) {
   //hooks
-  const { start, reset, time } = useTimer();
+  const { start, reset, time } = useTimer({
+    onTimeUpdate: async (time) => {
+      if (time % 120 === 0) {
+        const time = new Date().getTime();
+        await db
+          .collection("tasks")
+          .doc(currentTask.task)
+          .collection("timesheets")
+          .doc(currentTask.timesheet)
+          .update({ end: time });
+      }
+    },
+  });
+
   const [loading, setLoading] = useState(false);
   const [task, setTask] = useState(null);
   const [tasks, setTasks] = useState([]);

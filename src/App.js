@@ -29,8 +29,8 @@ function App() {
 
           {/* Task List */}
 
-          <TaskViewer state={state} rerender={rerender} />
           <TaskPie state={state} />
+          <TaskViewer state={state} rerender={rerender} />
 
           {/* Pie View */}
           <div></div>
