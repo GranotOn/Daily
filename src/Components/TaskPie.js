@@ -51,8 +51,8 @@ export default function TaskPie({ tasks }) {
   }, [tasks]);
 
   return (
-    <div className="bg-gray-800 bg-opacity-50 flex flex-col items-center">
-      <PieChart width={350} height={350}>
+    <div className="bg-gray-800 bg-opacity-50 flex flex-col items-center rounded">
+      <PieChart width={350} height={250}>
         <Pie
           data={pieData}
           dataKey="minutes"
