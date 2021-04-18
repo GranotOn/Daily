@@ -39,7 +39,7 @@ export const updateStartTime = async (taskId, timesheetId, start) => {
  */
 export const getTasks = async () => {
   const { docs } = await db.collection("tasks").get();
-  return docs
+  return docs;
 };
 
 /**
@@ -68,12 +68,13 @@ export const deleteTask = async (taskId) => {
  *
  * @param {String} taskId the task (parent) id
  * @param {Date} time the start time (also at the point of creation, the end time)
- * @returns
+ * @returns {String} timesheetId
  */
 export const createTimesheet = async (taskId, time) => {
-  return await db
+  const timesheetId = await db
     .collection("tasks")
     .doc(taskId)
     .collection("timesheets")
     .add({ start: time, end: time });
+  return timesheetId;
 };

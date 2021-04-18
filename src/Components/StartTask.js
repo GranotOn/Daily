@@ -8,8 +8,8 @@ import {
 // use-timer
 import { useTimer } from "use-timer";
 
-// firebase
-import { db } from "../firebase";
+// api
+import { updateEndTime, createTimesheet } from "../api";
 
 // react-select
 import Select from "react-select";
@@ -22,12 +22,7 @@ export default function StartTask({ rerender, tasks }) {
       // Update the firebase document (end time) every 2 minutes
       if (time % 120 === 0 && currentTask) {
         const time = new Date().getTime();
-        await db
-          .collection("tasks")
-          .doc(currentTask.task)
-          .collection("timesheets")
-          .doc(currentTask.timesheet)
-          .update({ end: time });
+        updateEndTime(currentTask.task, currentTask.timesheet, time);
       }
     },
   });
@@ -54,7 +49,7 @@ export default function StartTask({ rerender, tasks }) {
    * @returns {null}
    */
 
-  const createTimesheet = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     // If no task -> bail
@@ -66,31 +61,26 @@ export default function StartTask({ rerender, tasks }) {
 
     // Timesheet already running
     if (currentTask) {
+      // Get current time
       const time = new Date().getTime();
 
-      await db
-        .collection("tasks")
-        .doc(currentTask.task)
-        .collection("timesheets")
-        .doc(currentTask.timesheet)
-        .update({ end: time });
+      console.log(currentTask);
+      // Update end time
+      updateEndTime(currentTask.task, currentTask.timesheet, time);
 
+      // Reset task
       setCurrentTask(null);
       reset(); // timer
-      rerender();
+      rerender(); // global state
     }
     // Starting a new timesheet
     else {
       const value = task.value;
       const time = new Date().getTime();
-      const timesheet = await db
-        .collection("tasks")
-        .doc(value)
-        .collection("timesheets")
-        .add({ start: time, end: time });
-
-      start(); // timer
-      setCurrentTask({ task: value, timesheet: timesheet.id });
+      createTimesheet(value, time).then((timesheet) => {
+        start(); // timer
+        setCurrentTask({ task: value, timesheet: timesheet.id });
+      });
     }
 
     setLoading(false);
@@ -98,7 +88,7 @@ export default function StartTask({ rerender, tasks }) {
 
   return (
     <div className="bg-gray-800 bg-opacity-50 w-80 h-40 rounded">
-      <form className="flex flex-col p-4" onSubmit={createTimesheet}>
+      <form className="flex flex-col p-4" onSubmit={handleSubmit}>
         <Select
           onChange={setTask}
           label="Select Task"
