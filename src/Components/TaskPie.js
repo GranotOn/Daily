@@ -31,9 +31,9 @@ export default function TaskPie({ state }) {
           (x, y) => x + (y.data().end - y.data().start),
           0
         );
-        
+
         const deltaTime = Math.abs(totalTime) / 1000;
-        
+
         const minutes = Math.floor(deltaTime / 60) % 60;
 
         return {
@@ -55,8 +55,7 @@ export default function TaskPie({ state }) {
     getTimesheets();
   }, [tasks]);
 
-  const handlePieClick = () => {
-  }
+  const handlePieClick = () => {};
 
   return (
     <div className="bg-gray-800 bg-opacity-50">
@@ -76,7 +75,9 @@ export default function TaskPie({ state }) {
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
-        <Tooltip />
+        <Tooltip
+          formatter={(value, name, props) => [`${value} Minutes`, name]}
+        />
       </PieChart>
     </div>
   );

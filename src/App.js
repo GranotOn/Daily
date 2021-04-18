@@ -5,6 +5,7 @@ import Header from "./Components/Header";
 import TaskViewer from "./Components/TaskViewer";
 import TaskCreator from "./Components/TaskCreator";
 import TaskPie from "./Components/TaskPie";
+import StartTask from "./Components/StartTask";
 function App() {
   const [state, setState] = useState(false);
 
@@ -17,20 +18,19 @@ function App() {
         <div className="mx-auto">
           <Header />
         </div>
+        <div className="mx-auto">
+          <StartTask state={state} rerender={rerender} />
+        </div>
         {/* Create and review tasks section */}
         <div className="max-w-5xl mx-auto flex gap-x-2 items-center flex-col gap-y-2 lg:flex-row">
           {/* Create A Task */}
 
-          <div>
-            <TaskCreator rerender={rerender} />
-          </div>
+          <TaskCreator rerender={rerender} />
 
           {/* Task List */}
 
-          <div>
-            <TaskViewer state={state} rerender={rerender} />
-            <TaskPie state={state} />
-          </div>
+          <TaskViewer state={state} rerender={rerender} />
+          <TaskPie state={state} />
 
           {/* Pie View */}
           <div></div>
