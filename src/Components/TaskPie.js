@@ -34,7 +34,7 @@ export default function TaskPie({ state }) {
 
         const deltaTime = Math.abs(totalTime) / 1000;
 
-        const minutes = Math.floor(deltaTime / 60) % 60;
+        const minutes = Math.floor(deltaTime / 60);
 
         return {
           name: taskDoc.data().name,
