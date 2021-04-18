@@ -4,21 +4,9 @@ import { PieChart, Pie, Tooltip, Cell } from "recharts";
 // firebase
 import { db } from "../firebase";
 
-export default function TaskPie({ state }) {
+export default function TaskPie({ tasks }) {
   //hooks
-  const [tasks, setTasks] = useState([]);
   const [pieData, setPieData] = useState([]);
-
-  // methods
-
-  /**
-   * Get all tasks from firebase
-   */
-  const getTasks = async () => {
-    // Get all tasks from firebase
-    const { docs } = await db.collection("tasks").get();
-    setTasks(docs);
-  };
 
   /**
    * Constructs the pieData.
@@ -55,13 +43,6 @@ export default function TaskPie({ state }) {
 
     setPieData(data);
   };
-
-  /**
-   * Rerenders tasks when state changes
-   */
-  useEffect(() => {
-    getTasks();
-  }, [state]);
 
   /**
    * Rerender timesheets when tasks change (a derivative from when `state` changes)

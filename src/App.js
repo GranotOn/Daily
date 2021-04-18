@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getTasks } from "./api";
 
 // Page layout
 import Header from "./Components/Header";
@@ -8,8 +9,16 @@ import TaskPie from "./Components/TaskPie";
 import StartTask from "./Components/StartTask";
 function App() {
   const [state, setState] = useState(false);
+  const [tasks, setTasks] = useState([]);
 
   const rerender = () => setState(!state);
+
+  const loadTasks = async () => {
+    getTasks().then((data) => setTasks(data));
+  };
+  useEffect(() => {
+    loadTasks();
+  }, [state]);
 
   return (
     <div className="w-screen h-screen overflow-hidden relative bg-gray-900">
@@ -19,21 +28,18 @@ function App() {
           <Header />
         </div>
         <div className="mx-auto">
-          <StartTask state={state} rerender={rerender} />
+          <StartTask rerender={rerender} tasks={tasks} />
         </div>
         {/* Create and review tasks section */}
         <div className="max-w-5xl mx-auto flex gap-x-2 items-center flex-col gap-y-2 lg:flex-row">
           {/* Create A Task */}
-
           <TaskCreator rerender={rerender} />
 
-          {/* Task List */}
-
-          <TaskPie state={state} />
-          <TaskViewer state={state} rerender={rerender} />
-
           {/* Pie View */}
-          <div></div>
+          <TaskPie tasks={tasks} />
+
+          {/* Task List */}
+          <TaskViewer rerender={rerender} tasks={tasks} />
         </div>
       </div>
     </div>

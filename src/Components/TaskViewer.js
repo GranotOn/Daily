@@ -1,47 +1,22 @@
-import { useEffect, useState } from "react";
+// api
+import { deleteTask } from "../api";
 
-// firebase
-import { db } from "../firebase";
-
-export default function TaskViewer({ state, rerender }) {
-  //hooks
-  const [tasks, setTasks] = useState([]);
-
+export default function TaskViewer({ tasks, rerender }) {
   // methods
-
-  /**
-   * Get all tasks in firebase, sets them in tasks
-   */
-  const getTasks = async () => {
-    // Get all tasks from firebase
-    const { docs } = await db.collection("tasks").get();
-    setTasks(docs);
-  };
 
   /**
    * Deleted a task from firebase (firebase doesn't delete inner timesheets though)
    * @param {Object} task firebase docref for a task
    */
 
-  const removeTask = async (task) => {
-    db.collection("tasks")
-      .doc(task.id)
-      .delete()
-      .then(() => {
-        console.log("Document deleted successfully", task.id);
+  const removeTask = async (taskId) => {
+    deleteTask(taskId)
+      .then((data) => {
+        console.log("Document deleted succesfully");
         rerender();
       })
-      .catch((error) => {
-        console.error("Error removing document: ", error);
-      });
+      .catch((error) => console.error("Deleting", error));
   };
-
-  /**
-   * Rerenders when state toggles
-   */
-  useEffect(() => {
-    getTasks();
-  }, [state]);
 
   return (
     <div
@@ -55,7 +30,7 @@ export default function TaskViewer({ state, rerender }) {
       <div>
         {/* Tasks list */}
         <ul className="flex flex-col divide-y">
-          {tasks.map((task, index) => (
+          {tasks?.map((task, index) => (
             <li
               key={`task-${index}`}
               className="flex flex-row py-4 items-center justify-between"
@@ -72,7 +47,7 @@ export default function TaskViewer({ state, rerender }) {
               {/* X button */}
               <button
                 className="text-gray-600 h-5 w-5 hover:text-indigo-500 focus:outline-none"
-                onClick={() => removeTask(task)}
+                onClick={() => removeTask(task.id)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

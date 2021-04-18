@@ -1,20 +1,20 @@
 import { useState, useRef } from "react";
 
-// Firebase
-import { db } from "../firebase";
+// api
+import { createTask } from "../api";
 
 // Color picker
 import ColorPicker, { useColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
-export default function TaskCreator({rerender}) {
+export default function TaskCreator({ rerender }) {
   // hooks
   const [color, setColor] = useColor("hex", "#121212");
   const [loading, setLoading] = useState(false);
   const nameRef = useRef({});
 
   /**
-   * 
-   * @param {Object} e form submit event object 
+   *
+   * @param {Object} e form submit event object
    * @returns {null}
    */
   const createNewTask = async (e) => {
@@ -31,10 +31,7 @@ export default function TaskCreator({rerender}) {
     setLoading(true);
 
     // Create document
-    await db.collection("tasks").doc(name).set({
-      name: name,
-      color: color,
-    });
+    await createTask(name, color);
 
     // Rerender the state to cause the task viewer to update
     rerender();
@@ -61,7 +58,6 @@ export default function TaskCreator({rerender}) {
     bg-opacity-50
     p-6`}
     >
-
       <div
         className={`
     flex
