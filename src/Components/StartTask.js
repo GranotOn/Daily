@@ -19,8 +19,8 @@ export default function StartTask({ rerender, tasks }) {
   //hooks
   const { start, reset, time } = useTimer({
     onTimeUpdate: async (time) => {
-      // Update the firebase document (end time) every minute
-      if (time % 60 === 0 && currentTask) {
+      // Update the firebase document (end time) every 2 minutes
+      if (time % 120 === 0 && currentTask) {
         const time = new Date().getTime();
         updateEndTime(currentTask.task, currentTask.timesheet, time);
         rerender();
