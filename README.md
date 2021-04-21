@@ -44,6 +44,3 @@ export const db = firebase.firestore(app);
 4) TailwindCSS
 5) Craco
 
-### Contributing
-
-Open a pull request
