@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getTasks, getTodaysTimeSheets } from "./api";
+import { getTasks, getTodaysTimesheets } from "./api";
 
 // Page layout
 import Header from "./Components/Header";
@@ -7,6 +7,7 @@ import TaskViewer from "./Components/TaskViewer";
 import TaskCreator from "./Components/TaskCreator";
 import TaskPie from "./Components/TaskPie";
 import StartTask from "./Components/StartTask";
+import DailyReport from "./Components/DailyReport";
 function App() {
   const [state, setState] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -21,14 +22,14 @@ function App() {
   const loadTasks = async () => {
     getTasks().then((data) => setTasks(data));
   };
-  
+
   /**
    * @description Loads (daily) timesheets per doc in `tasks`
    */
   const loadTimeSheets = useCallback(async () => {
     const data = await Promise.all(
       tasks.map(async (task) => {
-        const { docs } = await getTodaysTimeSheets(task.id);
+        const { docs } = await getTodaysTimesheets(task.id);
         return { id: task.id, sheets: docs };
       })
     );
@@ -72,6 +73,11 @@ function App() {
           </div>
           <div className="row-start-3">
             <h3 className="text-indigo-400 text-lg">Daily Report</h3>
+            <DailyReport
+              rerender={rerender}
+              timesheets={timesheets}
+              tasks={tasks}
+            />
           </div>
         </main>
       </div>

@@ -83,7 +83,7 @@ export const createTimesheet = async (taskId, time) => {
  * @param {String} taskId the task id
  * @returns {Promise}
  */
-export const getAllTimeSheets = async (taskId) => {
+export const getAllTimesheets = async (taskId) => {
   return await db
     .collection("tasks")
     .doc(taskId)
@@ -91,7 +91,11 @@ export const getAllTimeSheets = async (taskId) => {
     .get();
 };
 
-export const getTodaysTimeSheets = async (taskId) => {
+/**
+ * @param {String} taskId the task id
+ * @returns {Promise}
+ */
+export const getTodaysTimesheets = async (taskId) => {
   // Get the start & end dates (midnight & 23:59) of today
   const startOfThisDay = new Date().setHours(0, 0, 0, 0);
   const endOfThisDay = new Date().setHours(23, 59, 59, 999);
@@ -104,4 +108,18 @@ export const getTodaysTimeSheets = async (taskId) => {
     .where("start", ">=", startOfThisDay)
     .where("start", "<", endOfThisDay)
     .get();
+};
+
+/**
+ * @param {String} taskId
+ * @param {String} timesheetId
+ * @returns {Promise}
+ */
+export const deleteTimesheet = async (taskId, timesheetId) => {
+  return await db
+    .collection("tasks")
+    .doc(taskId)
+    .collection("timesheets")
+    .doc(timesheetId)
+    .delete();
 };
