@@ -1,56 +1,42 @@
-import { useEffect, useState } from "react";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
-import { getTodaysTimeSheets } from "../api";
 
-// firebase
-import { db } from "../firebase";
-
-export default function TaskPie({ tasks }) {
-  //hooks
-  const [lastUpdate, setLastUpdate] = useState(null);
-  const [pieData, setPieData] = useState([]);
+export default function TaskPie({ tasks, timesheets }) {
 
   /**
-   * Constructs the pieData.
-   * For each task, traverse all time sheets and calculate minutes
-   * Then update pieData with that object
+   * Builds a suitable data array from the timesheets array
+   * @returns {Array} rechart pie data
    */
-  const getTimesheets = async () => {
-    let data = await Promise.all(
-      tasks.map(async (taskDoc) => {
-        // Get all timestamps
-        const { docs } = await getTodaysTimeSheets(taskDoc.id);
-        // Reduce timesheets -> accumulate difference at each timesheet
-        const totalTime = docs.reduce(
-          (x, y) => x + (y.data().end - y.data().start),
-          0
-        );
+  const getPieData = () => {
+    // Traverse timesheets
+    return timesheets.map(({ id, sheets }) => {
+      // Calculate overall time spent on this task
+      const totalTime = sheets.reduce(
+        (x, y) => x + (y.data().end - y.data().start),
+        0
+      );
 
-        const deltaTime = Math.abs(totalTime) / 1000;
+      // Get the task doc from the id
+      const taskDoc = tasks.find((t) => t.id === id);
 
-        const minutes = Math.floor(deltaTime / 60);
+      const deltaTime = Math.abs(totalTime) / 1000;
+      const minutes = Math.floor(deltaTime / 60);
 
-        return {
-          name: taskDoc.data().name,
-          minutes,
-          color: taskDoc.data().color.hex,
-        };
-      })
-    );
-
-    setPieData(data);
+      return {
+        name: taskDoc.data().name,
+        minutes,
+        color: taskDoc.data().color.hex,
+      };
+    });
   };
 
-  useEffect(() => {
-    getTimesheets();
-    setLastUpdate(new Date().toUTCString().split(" ").slice(-2).join(" "));
-  }, [tasks]);
+  const getLastUpdate = () =>
+    new Date().toUTCString().split(" ").slice(-2).join(" ");
 
   return (
     <div className="bg-gray-800 bg-opacity-50 flex flex-col items-center rounded">
       <PieChart width={350} height={250}>
         <Pie
-          data={pieData}
+          data={getPieData()}
           dataKey="minutes"
           nameKey="name"
           cx="50%"
@@ -59,7 +45,7 @@ export default function TaskPie({ tasks }) {
           outerRadius={80}
           label
         >
-          {pieData.map((entry, index) => (
+          {getPieData().map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
@@ -68,7 +54,7 @@ export default function TaskPie({ tasks }) {
         />
       </PieChart>
       <p className="text-gray-400 px-2 self-start">
-        Last update: <span>{lastUpdate}</span>
+        Last update: <span>{getLastUpdate()}</span>
       </p>
     </div>
   );

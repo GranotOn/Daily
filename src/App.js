@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getTasks, getTodaysTimeSheets } from "./api";
 
 // Page layout
@@ -10,15 +10,39 @@ import StartTask from "./Components/StartTask";
 function App() {
   const [state, setState] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [timesheets, setTimesheets] = useState([]);
 
+  // Force trigger a rerender (fetch api data)
   const rerender = () => setState(!state);
 
+  /**
+   * @description Loads tasks (firebase doc)
+   */
   const loadTasks = async () => {
     getTasks().then((data) => setTasks(data));
   };
+  
+  /**
+   * @description Loads (daily) timesheets per doc in `tasks`
+   */
+  const loadTimeSheets = useCallback(async () => {
+    const data = await Promise.all(
+      tasks.map(async (task) => {
+        const { docs } = await getTodaysTimeSheets(task.id);
+        return { id: task.id, sheets: docs };
+      })
+    );
+
+    setTimesheets(data);
+  }, [tasks]);
+
   useEffect(() => {
     loadTasks();
   }, [state]);
+
+  useEffect(() => {
+    loadTimeSheets();
+  }, [tasks, loadTimeSheets]);
 
   return (
     <div className="w-screen h-screen relative overflow-hidden bg-gray-900">
@@ -34,7 +58,7 @@ function App() {
           {/* Pie View */}
           <div className="row-start-1">
             <h3 className="text-indigo-400 text-lg">Monitor</h3>
-            <TaskPie tasks={tasks} />
+            <TaskPie tasks={tasks} timesheets={timesheets} />
           </div>
           {/* Task List */}
           <div className="row-start-1">
