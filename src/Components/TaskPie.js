@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
+import { getTodaysTimeSheets } from "../api";
 
 // firebase
 import { db } from "../firebase";
@@ -18,12 +19,7 @@ export default function TaskPie({ tasks }) {
     let data = await Promise.all(
       tasks.map(async (taskDoc) => {
         // Get all timestamps
-        const { docs } = await db
-          .collection("tasks")
-          .doc(taskDoc.id)
-          .collection("timesheets")
-          .get();
-
+        const { docs } = await getTodaysTimeSheets(taskDoc.id);
         // Reduce timesheets -> accumulate difference at each timesheet
         const totalTime = docs.reduce(
           (x, y) => x + (y.data().end - y.data().start),

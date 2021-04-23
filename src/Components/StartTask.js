@@ -65,7 +65,6 @@ export default function StartTask({ rerender, tasks }) {
       // Get current time
       const time = new Date().getTime();
 
-      console.log(currentTask);
       // Update end time
       updateEndTime(currentTask.task, currentTask.timesheet, time);
 

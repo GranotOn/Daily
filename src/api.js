@@ -78,3 +78,30 @@ export const createTimesheet = async (taskId, time) => {
     .add({ start: time, end: time });
   return timesheetId;
 };
+
+/**
+ * @param {String} taskId the task id
+ * @returns {Promise}
+ */
+export const getAllTimeSheets = async (taskId) => {
+  return await db
+    .collection("tasks")
+    .doc(taskId)
+    .collection("timesheets")
+    .get();
+};
+
+export const getTodaysTimeSheets = async (taskId) => {
+  // Get the start & end dates (midnight & 23:59) of today
+  const startOfThisDay = new Date().setHours(0, 0, 0, 0);
+  const endOfThisDay = new Date().setHours(23, 59, 59, 999);
+
+  // Compare with database timesheets
+  return await db
+    .collection("tasks")
+    .doc(taskId)
+    .collection("timesheets")
+    .where("start", ">=", startOfThisDay)
+    .where("start", "<", endOfThisDay)
+    .get();
+};

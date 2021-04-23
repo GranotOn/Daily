@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getTasks } from "./api";
+import { getTasks, getTodaysTimeSheets } from "./api";
 
 // Page layout
 import Header from "./Components/Header";
