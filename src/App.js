@@ -50,14 +50,14 @@ function App() {
       <div className="flex flex-col p-6 relative overflow-auto w-screen h-screen">
         {/* Header section */}
         <Header />
-        <main className="max-w-5xl mx-auto grid grid-flow-col grid-cols-3 my-10 gap-y-2 gap-x-6">
+        <main className="max-w-5xl mx-auto grid grid-flow-col grid-cols-2 my-10 gap-y-2 gap-x-6 min-w-max ">
           {/* Start A Task */}
           <div className="row-start-1">
             <h3 className="text-indigo-400 text-lg">Timer</h3>
             <StartTask rerender={rerender} tasks={tasks} />
           </div>
           {/* Pie View */}
-          <div className="row-start-1">
+          <div className="row-start-1 max-w-max">
             <h3 className="text-indigo-400 text-lg">Monitor</h3>
             <TaskPie tasks={tasks} timesheets={timesheets} />
           </div>
@@ -67,7 +67,7 @@ function App() {
             <TaskViewer rerender={rerender} tasks={tasks} />
           </div>
           {/* Create A Task */}
-          <div className="row-start-3 col-start-1 col-span-2">
+          <div className="row-start-3 col-start-1 flex flex-col items-start max-w-min">
             <h3 className="text-indigo-400 text-lg">Add A New Task Type</h3>
             <TaskCreator rerender={rerender} />
           </div>
