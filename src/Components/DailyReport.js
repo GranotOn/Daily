@@ -29,10 +29,10 @@ export default function DailyReport({ timesheets, rerender, tasks }) {
    */
   const getDifference = (start, end) => {
     const delta = end - start;
-    const seconds = getSeconds(delta);
+    const seconds = Math.floor(delta / 1000);
     return `${getHoursFromSeconds(seconds)}:${getMinutesFromSeconds(
       seconds
-    )}:${seconds}`;
+    )}:${getSeconds(seconds)}`;
   };
 
   /**
