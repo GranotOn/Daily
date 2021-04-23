@@ -34,8 +34,8 @@ export const db = firebase.firestore(app);
 - [x] Add and remove tasks
 - [x] Start and stop a timer, get realtime updates
 - [x] Visualize time distribution using visual aid
-- [ ] Filter by day/all-time
-- [ ] Add a daily report, listing timesheets
+- [x] Filter by day/all-time
+- [x] Add a daily report, listing timesheets
 
 ## Technologies
 
