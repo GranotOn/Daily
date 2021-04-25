@@ -66,17 +66,15 @@ export default function DailyReport({ timesheets, rerender, tasks }) {
    */
   const loadData = useCallback(() => {
     let tempData = [];
-    timesheets.forEach(({ id, sheets }) => {
-      sheets.forEach((sheet) =>
-        tempData.push({
-          taskId: id,
-          sheetId: sheet.id,
-          start: formatDate(sheet.data().start),
-          end: formatDate(sheet.data().end),
-          total: getDifference(sheet.data().start, sheet.data().end),
-        })
-      );
-    });
+    timesheets.forEach(({ id, doc }) =>
+      tempData.push({
+        taskId: id,
+        sheetId: doc.id,
+        start: formatDate(doc.data().start),
+        end: formatDate(doc.data().end),
+        total: getDifference(doc.data().start, doc.data().end),
+      })
+    );
 
     setData(tempData);
   }, [timesheets]);

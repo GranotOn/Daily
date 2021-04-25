@@ -1,14 +1,35 @@
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
 
 export default function TaskPie({ tasks, timesheets }) {
+  /**
+   * @description Reduces array and combines same-id elements
+   * @param {Array} timesheets
+   * @returns {Array} timesheets
+   */
+  const combineTimesheets = (timesheets) => {
+    return timesheets.reduce((prev, cur) => {
+      const index = prev.findIndex((v) => v.id === cur.id);
+      if (index === -1) {
+        // First instance of this task
+        prev.push({ id: cur.id, sheets: [cur.doc] }); // Create an array for sheets, push to updated array
+      } else {
+        // An instance of this task already exists
+        prev[index].sheets.push(cur.doc); // Just push this doc to that task sheet array
+      }
+      return prev;
+    }, []);
+  };
 
   /**
    * Builds a suitable data array from the timesheets array
    * @returns {Array} rechart pie data
    */
   const getPieData = () => {
+    // Join timesheets with the same id
+    const combinedTimesheets = combineTimesheets(timesheets);
+
     // Traverse timesheets
-    return timesheets.map(({ id, sheets }) => {
+    return combinedTimesheets.map(({ id, sheets }) => {
       // Calculate overall time spent on this task
       const totalTime = sheets.reduce(
         (x, y) => x + (y.data().end - y.data().start),

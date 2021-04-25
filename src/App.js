@@ -8,6 +8,7 @@ import TaskCreator from "./Components/TaskCreator";
 import TaskPie from "./Components/TaskPie";
 import StartTask from "./Components/StartTask";
 import DailyReport from "./Components/DailyReport";
+import TimesheetSorter from "./Components/TimesheetSorter";
 function App() {
   const [state, setState] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -30,11 +31,12 @@ function App() {
     const data = await Promise.all(
       tasks.map(async (task) => {
         const { docs } = await getTodaysTimesheets(task.id);
-        return { id: task.id, sheets: docs };
+        return Promise.all(docs.map(async (doc) => ({ id: task.id, doc })));
       })
     );
 
-    setTimesheets(data);
+    // Returns as [[<Promise>+], [<Promise>+],...], need to flatten
+    setTimesheets(data.flat());
   }, [tasks]);
 
   useEffect(() => {
@@ -72,7 +74,10 @@ function App() {
             <TaskCreator rerender={rerender} />
           </div>
           <div className="row-start-3">
-            <h3 className="text-indigo-400 text-lg">Daily Report</h3>
+            <div className="flex flex-row items-end justify-between mb-2">
+              <h3 className="text-indigo-400 text-lg">Daily Report</h3>
+              <TimesheetSorter setTimesheets={setTimesheets} />
+            </div>
             <DailyReport
               rerender={rerender}
               timesheets={timesheets}
