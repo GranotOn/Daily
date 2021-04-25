@@ -1,5 +1,5 @@
 # Daily
-![image](https://user-images.githubusercontent.com/58481800/115601086-0bdad280-a2e6-11eb-9cbc-ee87d915e08a.png)
+![image](https://user-images.githubusercontent.com/58481800/115999874-5ca83f00-a5f6-11eb-9f78-3e47aaeb44ef.png)
 
 ## Description
 
