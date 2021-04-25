@@ -35,7 +35,9 @@ export const db = firebase.firestore(app);
 - [x] Start and stop a timer, get realtime updates
 - [x] Visualize time distribution using visual aid
 - [x] Filter by day/all-time
-- [x] Add a daily report, listing timesheets
+- [x] Add a daily report, listing timesheets, sort by various fields
+- [ ] Edit an existing task (change colors, change name, purge timesheets)
+- [ ] Daily Goals handler (conditionally check your daily goals and monitor your progress towards them)
 
 ## Technologies
 
